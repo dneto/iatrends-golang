@@ -1,0 +1,400 @@
+Introdução à linguagem GO
+IA Trends
+29 Jul 2016
+
+Demétrio Menezes Neto
+demetrio_menezes@atlantico.com.br
+Github: https://github.com/dneto
+
+* Agenda
+
+- Histórico
+- Estruturas Básicas
+- Pacotes e Imports
+- Funções
+- Constantes e Variáveis
+- Controle de Fluxo
+- Arrays, Slices e Mapas
+- Ponteiros, Struct, Interfaces e OO
+- Concorrência: Channels e Goroutines
+
+* Go: O que come? Como vive?
+
+.image images/globoreporter.png
+
+* Histórico
+
+- Linguagem criada pelos engenheiros da Google: Rob Pike, Robert Griesemer e Ken Thompson;
+- Iniciou como um experimento;
+- Sua primeira versão estável foi lançada em 8 de Março de 2012;
+- Versão atual 1.6 (17 de Fevereiro de 2016)
+
+* Características:
+- Estaticamente tipada;
+- Compilada;
+- "Orientada a Objetos";
+- Concorrência ou multi-threading;
+- Redes;
+- Ferramentas e padrões bem definidos;
+
+* Vamos ao que interessa!
+
+
+* Comida !?
+
+.image images/gopher_comida.png
+
+* Código!
+
+.image images/gopher_coding.png
+
+* Hello World
+
+.play hello.go
+
+* Pacotes
+Todo programa escrito em Go é construido através de pacotes, estes devem ser
+declarados na primeira linha de cada arquivo.
+
+ package main
+
+O pacote `main` é especial, pois ele será o primeiro a ser executado, juntamente da função `main()`
+
+* Imports
+
+Através dos imports é possível adicionar o conteúdo de outros pacotes a um determinado arquivo. No exemplo "Hello, Atlantes", vimos:
+
+ import "fmt"
+
+Também é possível adicionar mais de um pacote por comando `import` :
+
+.play time.go
+
+* Funções
+
+* Funcões
+
+Em Go as funções são um tipo, isso significa que você pode atribuir funções a
+variáveis e utilizar funções como argumentos em outras funções. O comando para
+declarar uma função é bem similiar ao de outras linguagens _C-like_:
+
+.code math.go /^func add/,/^}/
+
+Se todos os argumentos forem de um mesmo tipo, é possível agregá-los e declarar
+o tipo depois:
+
+	func sub(x, y int) (res int) {
+		res = x - y
+		return
+	}
+
+* Funções - Parte 2
+No Go também podemos ter uma função que retorna múltiplos valores. O exemplo abaixo mostra uma função que retorna o quociente e o resto da divisão:
+
+
+	func div(x,y int) (int, int) {
+		if y == 0 {
+			panic("Divisão por Zero")
+		}
+		
+		return x/y, x%y
+	}
+
+Exemplo:
+
+.play math.go 22,26
+
+
+* Variáveis e Constantes
+
+* Declarando e atribuindo variáveis
+
+Através da palavra `var` é possível declarar novas variáveis no Go, as
+variáveis podem ser apenas declaradas ou declaradas e atribuidas em uma mesma
+linha
+
+    var message String
+    message = "Hello, Atlantes"
+
+Modo _Inline_:
+
+	var message = "Hello, Atlantes"
+
+Modo _Short_ (Apenas dentro de funções):
+
+	message := "Hello, Atlantes"
+
+* Tipos
+
+Go possui os seguintes tipos primitivos:
+
+	byte bool
+	
+	int  int8  int16  int32  int64
+	uint uint8 uint16 uint32 uint64
+	
+	float32 float64
+
+	rune string
+	
+	complex64 complex128
+
+Conversão entre tipos (casting):
+
+	var i int = 42
+	var f float64 = float64(i)
+	var u uint = uint(f)
+
+* Constantes
+
+	const Pi 3.14
+
+	const (
+		euler = 2.71
+		goldenRatio = 1.61
+		big = 1 << 100
+	)
+
+* Controle de Fluxo
+
+* Condicional
+	
+	year := time.Now().Year()
+	if year == 2016 {
+		fmt.Println("2016")
+	} else {
+		fmt.Println("not 2016")
+	}
+
+Atribuição + Comparação:
+
+	if year := time.Now().Year(); x == 2016 {
+		fmt.Println(year)
+	}
+
+* Condicional: Switch-case - Parte 1
+
+A cláusula `switch-case` é bem similar a presente em outras linguagens. Segue o exemplo abaixo:
+
+.play switchcase03.go 5,24
+
+* Condicional: Switch-case - Parte 2
+
+Também é possível utilizar atribuição inline nas cláusulas `switch-case`
+
+.play switchcase.go 5,24
+
+* Condicional: Switch-case - Parte 3
+
+Além da estrutura padrão, podemos utilizar um switch-case para substituir uma série de cláusulas `if-else`:
+
+.play switchcase02.go 6,13
+
+* Repetição
+	
+O comando `for` é o único comando para realizar repetições em um código Go,
+entretanto suporta as mesmas estruturas que em outras linguagens são
+representadas através de um comando `while`.
+
+- Loop Infinito:
+
+	for {}
+
+- `While` -like:
+
+	for x < 100{}
+
+- `For`:
+
+	for i := 0; i < 10; i++ {}
+
+- `For` each
+	
+	for _, i := range collection {}
+
+
+* For
+
+.play forloop.go
+
+* Defer
+
+O comando `defer` indica que a função referenciada só deve ser executada após o
+retorno da função invocadora.
+
+	func main(){
+		f, _ := os.Open("files/hello.txt")
+		defer f.Close()
+	}
+
+* Arrays, Slices e Mapas
+
+* Arrays
+Os arrays são estruturas bem presentes na grande maioria das linguagens
+imperativas. Um array consiste em um espaço contínuo de memória alocado para um
+determinado número de intâncias de um tipo. No Go, podemos declarar um array de duas formas
+
+- Array vazio ou não inicializado:
+	
+	array := [10]int
+
+- Array inicializado:
+	
+	fruit := [3]string{"Apple", "Banana", "Orange"}
+
+- Acessando um array:
+
+	fruit[0] //"Apple"
+
+- Inserindo um valor em um array:
+
+	fruit[0] = "Tomate"
+
+* Slices
+O tipo slice é uma referência para um array, provendo uma interface mais flexível para se trabalhar com uma sequência de dados cujo tamanho é indefinido (estático ou variável). A sintaxe para a utilização de um slice é similar à utilizada para manipular arrays, exceto pela criação:
+
+	fruitSlice := make([]string) //Criando um slice vazio.
+
+Além disso, é possível criar slices através de fatias de um array ou outro slice:
+
+	fruitSlice = fruits[1:] // Referencia da posição 1 até o final do array frutas
+	fruitSlice = fruits[:1]  // Referencia do início até a posição 1 do array frutas
+	fruitSlice = fruits[1:2] // Referencia da posição 1 à 2 do array frutas
+
+* Slices - Parte 2
+
+No exemplo abaixo podemos ver melhor como os slices referenciam um array "por
+trás":
+
+.play arraysSlices.go 6,11
+
+* Mapas
+
+Presentes em muitas linguagens atuais e também chamados de dicionários, os
+mapas existem por padrão em Go. Existem duas maneiras de declarar um novo mapa:
+
+- Mapa vazio:
+
+	emptyMap := make(map[string]string)
+
+- Mapa inicializado:
+
+.play map.go 6,15
+
+
+* Ponteiros
+
+* Ponteiros
+Um ponteiro representa um espaço alocado na memória que aponta para outro
+espaço alocado. Go, assim como C e C++, suporta ponteiros, mas não suporta
+aritimética com ponteiros:
+
+.play pointer.go 6,10
+
+
+* Tipos Personalizados, Structs, Interfaces
+
+* Tipos personalizados:
+
+A criação de tipos complexos e tipos personalizados está presente na grande
+maioria das linguagens atuais, permitindo estruturar e organizar nosso código.
+O comando `type` define um tipo personalizado em Go
+
+.code customtypes.go 5
+
+Podemos também associar funções a um tipo:
+
+.code customtypes.go 7,9
+
+Exemplo:
+
+.play customtypes.go 12,13
+
+* Structs
+Através dos structs é possível representar estruturas complexas em tipos
+personalizados:
+
+.code person.go 5,8
+
+Criando instâncias e ponteiros de um struct:
+.code person.go 11,12
+
+Acessando campos de um struct:
+.play person.go 14,15
+
+* Orientação a Objetos?
+Os mais puristas irão dizer que Go não possui orientação a objetos, mas simula
+tal paradigma. Através de structs e funções de tipos podemos ter o mesmo efeito
+objetos e métodos, assim como em uma linguagem orientada a objetos, entretanto
+o conceito de classe e herança, por exemplo, estão ausentes. Para simular
+herança o Go utiliza uma técnica chamada _embedding_ (incorporação):
+
+.code inheritance.go 12,15
+
+O _embedding_ é uma composição em que o campo não possui uma variável associada, dessa maneira o Go entende que as variáveis desse campo anônimo podem ser acessadas através do struct normalmente
+
+* Embedding
+
+Através de um _syntax_ _sugar_ podemos acessar os dados do campo anônimo como se fossem do próprio struct.
+
+.play inheritance.go 18,21
+
+* Interfaces
+
+* Interfaces
+
+As interfaces do Go tem um conceito parecido com o de outras linguagens: definir um comportamento. Sua utilização difere de outras linguagens estaticamente tipadas pelo fato de um tipo não declarar explicitamente qual interface está implementando.
+
+Como declarar uma interface:
+
+.code interface.go 5,7
+
+* Interfaces - Parte 2: Implementando uma interface
+
+Para implementar uma interface, é necessário apenas criar os métodos requeridos pela interface em um tipo:
+
+.code interface.go 9,15
+
+Running:
+.play interface.go 18,19
+
+* Interfaces - Parte 3: Embedding em interface
+Também é possível utilizar _embedding_ em interfaces:
+
+.code embeddinginterfaces.go 9,24
+
+.play embeddinginterfaces.go 27,29
+
+* Concorrência: Channels e Goroutines
+ 
+* Goroutines
+
+As goroutines (go-rotinas) são executadas em paralelo, para criá-las utiliza-se o comando `go` seguido de uma chamada a uma função ou método.
+
+	go fmt.Println("Hello, goroutine")
+
+Ou:
+
+	go func(){
+		fmt.Println("Hello, Goroutine")
+	}()
+
+* Canais
+
+Um canal é uma abstração para uma fila que pode ou não ser bufferizada. Os canais são de uso exclusivo com goroutines:
+
+Como criar um canal:
+
+- Sem buffer
+
+	channel := make(chan int)
+
+- Bufferizado
+
+	channel := make(chan int, 10)
+
+* Concorrência - Exemplo:
+
+.play concurrency.go 9,31
+
+* Perguntas?
